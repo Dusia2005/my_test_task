@@ -1,5 +1,3 @@
 databaseChangeLog:
   - include:
       file: db/changelog/changeset/create-hotels-table.yaml
-  - include:
-      file: db/changelog/changeset/insert-hotels.yaml

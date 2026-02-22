@@ -1,9 +1,6 @@
 package com.example.my_test_task.service;
 
-import com.example.my_test_task.dto.AddressDto;
-import com.example.my_test_task.dto.ArrivalTimeDto;
-import com.example.my_test_task.dto.ContactsDto;
-import com.example.my_test_task.dto.HotelDetailsResponse;
+import com.example.my_test_task.dto.*;
 import com.example.my_test_task.repository.HotelRepository;
 import com.example.my_test_task.entity.Hotel;
 import lombok.RequiredArgsConstructor;
@@ -12,36 +9,73 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 public class HotelService {
 
     private final HotelRepository hotelRepository;
+
+    public HotelService(HotelRepository hotelRepository) {
+        this.hotelRepository = hotelRepository;
+    }
 
     public List<Hotel> getAllHotels() {
         return hotelRepository.findAll();
     }
 
-    public HotelDetailsResponse getHotelById(Long id) {
-        Hotel hotel = hotelRepository.findById(id)
+    public Hotel getHotelById(Long id) {
+        return hotelRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Hotel not found"));
+    }
 
+    public Hotel createHotel(Hotel hotel) {
+        return hotelRepository.save(hotel);
+    }
+
+    public List<Hotel> search(String name, String brand, String city, String country) {
+        if(city != null) {
+            return hotelRepository.findByCityIgnoreCase(city);
+        }
+
+        if (name != null) {
+            return  hotelRepository.findByNameContainingIgnoreCase(name);
+        }
+
+        if (brand != null) {
+            return  hotelRepository.findByBrandIgnoreCase(brand);
+        }
+
+        return  hotelRepository.findAll();
+    }
+    public HotelSummaryResponse toSummaryDto(Hotel hotel) {
+        String address = String.format("%d %s, %s, %s, %s",
+                hotel.getHouseNumber(),
+                hotel.getStreet(),
+                hotel.getCity(),
+                hotel.getPostCode(),
+                hotel.getCountry());
+        return new HotelSummaryResponse(
+                hotel.getId(),
+                hotel.getName(),
+                hotel.getDescription(),
+                address,
+                hotel.getPhone()
+        );
+    }
+
+    public HotelDetailsResponse toDetailsDto(Hotel hotel) {
         return new HotelDetailsResponse(
                 hotel.getId(),
                 hotel.getName(),
                 hotel.getDescription(),
-                "Hilton",
+                hotel.getBrand(),
                 new AddressDto(
-                        9,
-                        "Pobediteley Avenue",
-                        "Minsk",
-                        "Belarus",
-                        "220004"
+                        hotel.getHouseNumber(),
+                        hotel.getStreet(),
+                        hotel.getCity(),
+                        hotel.getCountry(),
+                        hotel.getPostCode()
                 ),
-                new ContactsDto(
-                        hotel.getPhone(),
-                        "doubletreeminsk.info@hilton.com"
-                ),
-                new ArrivalTimeDto("14:00", "12:00"),
+                new ContactsDto(hotel.getPhone(), hotel.getEmail()),
+                new ArrivalTimeDto(hotel.getCheckIn(), hotel.getCheckOut()),
                 List.of(
                         "Free parking",
                         "Free WiFi",
@@ -56,4 +90,6 @@ public class HotelService {
                 )
         );
     }
+
+
 }

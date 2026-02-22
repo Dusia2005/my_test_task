@@ -1,7 +1,6 @@
 package com.example.my_test_task.entity;
 
 import jakarta.persistence.*;
-import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,11 +19,26 @@ public class Hotel {
     private Long id;
 
     private String name;
-
-    @Column(length = 1000)
     private String description;
+    private String brand;
 
-    private String address;
+    @Column(name = "house_number")
+    private Integer houseNumber;
+    private String street;
+    private String city;
+    private String country;
+    @Column(name = "post_code")
+    private String postCode;
 
     private String phone;
+    private String email;
+
+    @Column(name = "check_in")
+    private String checkIn;
+    @Column(name = "check_out")
+    private String checkOut;
+
+    public Long getId() {
+        return id;
+    }
 }
