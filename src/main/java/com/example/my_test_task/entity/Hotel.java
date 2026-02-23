@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity
 @Table(name = "hotels")
 @Getter
@@ -38,7 +40,8 @@ public class Hotel {
     @Column(name = "check_out")
     private String checkOut;
 
-    public Long getId() {
-        return id;
-    }
+    @ElementCollection
+    @CollectionTable(name = "hotel_amenities", joinColumns = @JoinColumn(name = "hotel_id"))
+    @Column(name = "amenity")
+    private List<String> amenities;
 }

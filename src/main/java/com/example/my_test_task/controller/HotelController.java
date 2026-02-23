@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/property-view")
@@ -43,10 +44,21 @@ public class HotelController {
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String brand,
             @RequestParam(required = false) String city,
-            @RequestParam(required = false) String country
+            @RequestParam(required = false) String country,
+            @RequestParam(required = false) String amenities
     ) {
-        return hotelService.search(name, brand, city, country).stream()
+        return hotelService.search(name, brand, city, country, amenities).stream()
                 .map(hotelService::toSummaryDto)
                 .toList();
+    }
+
+    @PostMapping("/hotels/{id}/amenities")
+    public void addAmenities(@PathVariable Long id, @RequestBody List<String> amenities) {
+        hotelService.addAmenities(id, amenities);
+    }
+
+    @GetMapping("/histogram/{param}")
+    public Map<String, Long> histogram(@PathVariable String param) {
+        return  hotelService.getHistogram(param);
     }
 }

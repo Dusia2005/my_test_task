@@ -1,0 +1,17 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-hotel-amenities
+      author: you
+      changes:
+        - createTable:
+            tableName: hotel_amenities
+            columns:
+              - column:
+                  name: hotel_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: amenity
+                  type: VARCHAR(255)
